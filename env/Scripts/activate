@@ -37,7 +37,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="D:\Gigs\flask\Flask-Auth-REST-API\env"
+VIRTUAL_ENV="D:\Isaiah\Isaiah\Gigs\Everest Guage\everestpy\everesttokenauth\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
