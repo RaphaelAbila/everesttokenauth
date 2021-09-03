@@ -13,14 +13,26 @@ from utils import (
 )
 from models import Usersauth
 from app import db
-
+import logging
+import traceback
+import logging.config
 
 authentication = Blueprint("authentication", __name__)
+
+
+logging.config.fileConfig('logging.cfg', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
+
 
 #Default Path
 @authentication.route("/",methods=["POST"])
 def helloWorld():
-    return "<h1>Welcome to the API Portal</h1>"
+    try:
+        return "<h1>Welcome to the API Portal</h1>"
+    except OSError as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
+
 
 # REGISTER A USER AS AN API USER
 @authentication.route("/register", methods=["POST"])
@@ -61,6 +73,7 @@ def register_user():
                     'status': 'Failure',
                     'message': 'Operation failed'
                 }
+                logger.error('Error: '+ e)
                 return make_response(jsonify(responseObject)), 401
         else:
             responseObject = {
@@ -79,15 +92,19 @@ def register_user():
 # LOGGING IN TO GET ACCESS TOKEN
 @authentication.route("/login", methods=["POST"])
 def login_user():
-    user_email = request.json["email"]
-    user_password = request.json["password"]
+    try:
+        user_email = request.json["email"]
+        user_password = request.json["password"]
 
-    user_token = validate_user(user_email, user_password)
+        user_token = validate_user(user_email, user_password)
 
-    if user_token:
-        return jsonify({"jwt_token": user_token})
-    else:
-        Response(status=401)
+        if user_token:
+            return jsonify({"jwt_token": user_token})
+        else:
+            Response(status=401)
+    except Exception as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
 
 # FETCHING ATTENDANCE
 @authentication.route("/attendance", methods=["POST"])
@@ -127,17 +144,25 @@ def get_attendance():
 
 @authentication.route("/freeAttendance", methods=["POST"])
 def freeAttendance():
-    data = fetch_attendance(request.json['registrationnumber'])
+    try:
+        data = fetch_attendance(request.json['registrationnumber'])
 
-    responseObject = {
-                'status': 'success',
-                'data': {
-                    'user_id': data.id,
-                    'email': data.email,
-                    'nationality':data.nationality
+        responseObject = {
+                    'status': 'success',
+                    'data': {
+                        'user_id': data.id,
+                        'email': data.email,
+                        'nationality':data.nationality
+                    }
                 }
-            }
-    return make_response(jsonify(responseObject)), 200 
+        return make_response(jsonify(responseObject)), 200 
+    except Exception as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
+        return 'Error'
+    except:
+        logger.error("uncaught exception: %s", traceback.format_exc())
+        return False
 
 
 @authentication.route("/campusAttendance", methods=["POST"])

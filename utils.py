@@ -10,6 +10,13 @@ from flask.helpers import make_response
 from app import db
 from settings import JWT_SECRET_KEY
 
+import logging
+import traceback
+import logging.config
+
+logging.config.fileConfig('logging.cfg', disable_existing_loggers=False)
+logger = logging.getLogger(__name__)
+
 
 def generate_salt():
     salt = os.urandom(16)
@@ -96,8 +103,16 @@ def decode_auth_token(auth_token):
 
 
 def fetch_attendance(regstriationnumber):
-    user = Users.query.filter_by(registration=regstriationnumber).first()
-    return user
+    try:
+        user = Users.query.filter_by(registration=regstriationnumber).first()
+        return user
+    except Exception as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
+        return False
+    except:
+        logger.error("uncaught exception: %s", traceback.format_exc())
+        return False
 
 
 def fetch_campus_attendance(regstriationnumber):
