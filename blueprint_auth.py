@@ -19,20 +19,17 @@ import logging.config
 
 authentication = Blueprint("authentication", __name__)
 
-
 logging.config.fileConfig('logging.cfg', disable_existing_loggers=False)
 logger = logging.getLogger(__name__)
 
-
 #Default Path
-@authentication.route("/",methods=["POST"])
+@authentication.route("/",methods=["GET"])
 def helloWorld():
     try:
         return "<h1>Welcome to the API Portal</h1>"
     except OSError as e:
         logger.error(e)
         logger.error(e, exc_info=True)
-
 
 # REGISTER A USER AS AN API USER
 @authentication.route("/register", methods=["POST"])
@@ -107,7 +104,7 @@ def login_user():
         logger.error(e, exc_info=True)
 
 # FETCHING ATTENDANCE
-@authentication.route("/attendance", methods=["POST"])
+@authentication.route("/attendance", methods=["GET"])
 def get_attendance():
     # get the auth token
     auth_header = request.json['token']
@@ -141,8 +138,8 @@ def get_attendance():
         }
     return make_response(jsonify(responseObject)), 402
 
-
-@authentication.route("/freeAttendance", methods=["POST"])
+#FETCH Attendance without Authentication
+@authentication.route("/freeAttendance", methods=["GET"])
 def freeAttendance():
     try:
         data = fetch_attendance(request.json['registrationnumber'])
@@ -159,11 +156,11 @@ def freeAttendance():
     except Exception as e:
         logger.error(e)
         logger.error(e, exc_info=True)
-        return 'Error'
+        return e
     except:
         logger.error("uncaught exception: %s", traceback.format_exc())
         return False
-
+        
 
 @authentication.route("/campusAttendance", methods=["POST"])
 def freeCampusAttendance():

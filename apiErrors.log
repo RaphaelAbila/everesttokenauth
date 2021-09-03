@@ -169,3 +169,9 @@ TypeError: The view function did not return a valid response. The function eithe
 2021-09-03 20:50:13,961 werkzeug - INFO: * Restarting with stat
 2021-09-03 20:50:29,625 werkzeug - INFO: * Detected change in 'D:\\Isaiah\\Isaiah\\Gigs\\Everest Guage\\everestpy\\everesttokenauth\\app.py', reloading
 2021-09-03 20:50:30,286 werkzeug - INFO: * Restarting with stat
+2021-09-03 20:51:42,652 werkzeug - INFO: * Detected change in 'D:\\Isaiah\\Isaiah\\Gigs\\Everest Guage\\everestpy\\everesttokenauth\\app.py', reloading
+2021-09-03 20:51:43,559 werkzeug - INFO: * Restarting with stat
+2021-09-03 20:51:55,011 werkzeug - INFO: * Detected change in 'D:\\Isaiah\\Isaiah\\Gigs\\Everest Guage\\everestpy\\everesttokenauth\\blueprint_auth.py', reloading
+2021-09-03 20:51:55,768 werkzeug - INFO: * Restarting with stat
+2021-09-03 20:52:13,635 werkzeug - INFO: * Detected change in 'D:\\Isaiah\\Isaiah\\Gigs\\Everest Guage\\everestpy\\everesttokenauth\\blueprint_auth.py', reloading
+2021-09-03 20:52:14,330 werkzeug - INFO: * Restarting with stat
