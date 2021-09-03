@@ -2,6 +2,7 @@ from flask import Blueprint, json, request, Response, jsonify
 from flask.helpers import make_response
 from utils import (
     fetch_attendance,
+    fetch_campus_attendance,
     validate_user_input,
     generate_salt,
     generate_hash,
@@ -15,6 +16,11 @@ from app import db
 
 
 authentication = Blueprint("authentication", __name__)
+
+#Default Path
+@authentication.route("/",methods=["POST"])
+def helloWorld():
+    return "<h1>Welcome to the API Portal</h1>"
 
 # REGISTER A USER AS AN API USER
 @authentication.route("/register", methods=["POST"])
@@ -119,3 +125,31 @@ def get_attendance():
     return make_response(jsonify(responseObject)), 402
 
 
+@authentication.route("/freeAttendance", methods=["POST"])
+def freeAttendance():
+    data = fetch_attendance(request.json['registrationnumber'])
+
+    responseObject = {
+                'status': 'success',
+                'data': {
+                    'user_id': data.id,
+                    'email': data.email,
+                    'nationality':data.nationality
+                }
+            }
+    return make_response(jsonify(responseObject)), 200 
+
+
+@authentication.route("/campusAttendance", methods=["POST"])
+def freeCampusAttendance():
+    data = fetch_campus_attendance(request.json['registrationnumber'])
+
+    responseObject = {
+                'status': 'success',
+                'data': {
+                    'learnerid': data.learner_id,
+                    'attendance_code': data.attendance_code,
+                    'registration_number':data.registration_number
+                }
+            }
+    return make_response(jsonify(responseObject)), 200 

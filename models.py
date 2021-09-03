@@ -43,3 +43,16 @@ class Users(db.Model):
 
 # class Classes(db.Model):
 
+class Eglesson_attendance(db.Model):
+    __bind_key__ = 'campus'
+    __tablename__ = 'eglesson_attendance'
+    attendance_id = db.Column('attendance_id',db.Integer, primary_key=True)
+    learner_id = db.Column('learner_id',db.Integer)
+    class_id = db.Column('class_id',db.Integer)
+    exercise_score = db.Column('exercise_score',db.String(30))
+    tutor_remark = db.Column('tutor_remark',db.String(1000))
+    session_id = db.Column('session_id',db.Integer)
+    attendance_code = db.Column('attendance_code',db.String(8))
+    tutor_rating = db.Column('tutor_rating',db.Integer)
+    registration_number = db.Column('registration_number',db.String(255))
+    attendance_confirmed = db.Column('attendance_confirmed',db.String(4))

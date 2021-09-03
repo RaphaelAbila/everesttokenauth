@@ -8,10 +8,10 @@ app = Flask(__name__)
 
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS']=True
-app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@localhost/user_authentication'
+app.config['SQLALCHEMY_DATABASE_URI']='mysql://root:@127.0.0.1/user_authentication'
 app.config['SQLALCHEMY_BINDS']={
-    'grader': "mysql://root:@localhost/everestg_grader",
-    'campus': "mysql://root:@localhost/everestg_campus_kayiwa"
+    'grader': "mysql://root:@127.0.0.1/everestg_grader",
+    'campus': "mysql://root:@127.0.0.1/everestg_campus_kayiwa"
 }
 app.debug =0
 

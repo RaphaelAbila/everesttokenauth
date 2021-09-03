@@ -1,4 +1,4 @@
-from models import Users,Usersauth
+from models import Users,Usersauth,Eglesson_attendance
 import os
 from hashlib import pbkdf2_hmac
 import datetime
@@ -98,6 +98,11 @@ def decode_auth_token(auth_token):
 def fetch_attendance(regstriationnumber):
     user = Users.query.filter_by(registration=regstriationnumber).first()
     return user
+
+
+def fetch_campus_attendance(regstriationnumber):
+    learner = Eglesson_attendance.query.filter_by(registration_number=regstriationnumber).first()
+    return learner
 
 def db_read(query, params=None):
     cursor = db.connection.cursor()
