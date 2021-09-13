@@ -9,6 +9,7 @@ from utils import (
     # db_write,
     validate_user,
     decode_auth_token,
+    updatepassword
 
 )
 from models import Usersauth
@@ -98,10 +99,11 @@ def login_user():
         if user_token:
             return jsonify({"jwt_token": user_token})
         else:
-            Response(status=401)
+            return Response(status=401)
     except Exception as e:
         logger.error(e)
         logger.error(e, exc_info=True)
+        return e
 
 # FETCHING ATTENDANCE
 @authentication.route("/attendance", methods=["GET"])
@@ -114,13 +116,14 @@ def get_attendance():
         
         if not isinstance(resp, str):
             data = fetch_attendance(request.json['registrationnumber'])
-
+            subjectsattended = fetch_campus_attendance(request.json['registrationnumber'])
             responseObject = {
                 'status': 'success',
                 'data': {
                     'user_id': data.id,
                     'email': data.email,
-                    'nationality':data.nationality
+                    'nationality':data.nationality,
+                    'attendances': subjectsattended
                 }
             }
             return make_response(jsonify(responseObject)), 200
@@ -169,9 +172,41 @@ def freeCampusAttendance():
     responseObject = {
                 'status': 'success',
                 'data': {
-                    'learnerid': data.learner_id,
-                    'attendance_code': data.attendance_code,
-                    'registration_number':data.registration_number
+                    'Subjects': data
+                    # 'learnerid': data.learner_id,
+                    # 'attendance_code': data.attendance_code,
+                    # 'registration_number':data.registration_number
                 }
             }
     return make_response(jsonify(responseObject)), 200 
+
+
+@authentication.route("/changepassword", methods=["POST"])
+def changePassword():
+    # get the auth token
+    auth_header = request.json['token']
+    if auth_header !='':
+        auth_token=auth_header
+        resp = decode_auth_token(auth_token)
+        
+        if not isinstance(resp, str):
+            data = updatepassword(request.json['registrationnumber'],request.json['newpassword'])
+
+            responseObject = {
+                'status': 'success',
+                'data': data
+            }
+            return make_response(jsonify(responseObject)), 200
+        else:
+            print(resp)
+            responseObject = {
+            'status': 'fail',
+            'message': resp
+        }
+        return make_response(jsonify(responseObject)), 401
+    else:
+        responseObject = {
+            'status': 'fail',
+            'message': 'No token Provided!'
+        }
+    return make_response(jsonify(responseObject)), 402

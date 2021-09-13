@@ -1,4 +1,4 @@
-from models import Users,Usersauth,Eglesson_attendance
+from models import Users,Usersauth,Eglesson_attendance,Egclasses,Egsubjects, Eglearners
 import os
 from hashlib import pbkdf2_hmac
 import datetime
@@ -6,7 +6,7 @@ import jwt
 from flask_mysqldb import MySQLdb
 from flask import Blueprint, json, request, Response, jsonify
 from flask.helpers import make_response
-
+from sqlalchemy import select, func
 from app import db
 from settings import JWT_SECRET_KEY
 
@@ -116,9 +116,52 @@ def fetch_attendance(regstriationnumber):
 
 
 def fetch_campus_attendance(regstriationnumber):
-    learner = Eglesson_attendance.query.filter_by(registration_number=regstriationnumber).first()
-    return learner
+    try:
+        learner = Eglesson_attendance.query.filter_by(registration_number=regstriationnumber).all()
+        subjects = []
+        for  i in learner:
+            classes = Egclasses.query.filter_by(class_id=i.class_id).first()
+            print(classes.subject_id)
+            subject = Egsubjects.query.filter_by(subject_id=classes.subject_id).first()
+            attendance = Eglesson_attendance.query.filter_by(class_id=i.class_id, registration_number=regstriationnumber).count()
+            print(attendance)
+            subjectDetails = [subject.subject_name,subject.subject_code,attendance]
+            subjects.append(subjectDetails)
 
+        # classids = select(Egclasses).where(Egclasses.c.class_id IN classes)
+        return subjects
+
+    except Exception as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
+        return e
+    except:
+        logger.error("uncaught exception: %s", traceback.format_exc())
+        return e
+
+
+# Update password
+def updatepassword(regstriationnumber,newpassword):
+    try:
+        learner = Eglearners.query.filter_by(registration_number=regstriationnumber).first()
+        learner.password = newpassword
+        db.session.merge(learner)
+        db.session.flush()
+        db.session.commit()
+
+        user = Users.query.filter_by(registration=regstriationnumber).first()
+        user.password = newpassword
+        db.session.merge(user)
+        db.session.flush()
+        db.session.commit()
+        return "Success"
+    except Exception as e:
+        logger.error(e)
+        logger.error(e, exc_info=True)
+        return False
+    except:
+        logger.error("uncaught exception: %s", traceback.format_exc())
+        return False
 def db_read(query, params=None):
     cursor = db.connection.cursor()
     if params:
